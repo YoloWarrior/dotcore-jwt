@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using cor.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PetyaService;
 
 namespace cor.Controllers
 {
@@ -12,8 +13,10 @@ namespace cor.Controllers
     public class ValuesController : Controller
     {
         private IUserService _userService;
+        private PetyaServiceSoapClient _client;
         public ValuesController(IUserService userService)
         {
+            _client = new PetyaServiceSoapClient(PetyaServiceSoapClient.EndpointConfiguration.PetyaServiceSoap);
             _userService = userService;
         }
 
@@ -35,7 +38,7 @@ namespace cor.Controllers
         [HttpGet]
         public IEnumerable<string> Get()
         {
-            return new string[] { "value1", _userService.GetLogin() };
+            return new string[] { _client.HelloWorldAsync().Result.Body.HelloWorldResult, _userService.GetLogin() };
         }
 
         // GET api/values/5
